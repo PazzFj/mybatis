@@ -122,31 +122,32 @@ public class Configuration {
   protected Set<String> lazyLoadTriggerMethods = new HashSet<>(Arrays.asList("equals", "clone", "hashCode", "toString"));
   protected Integer defaultStatementTimeout;
   protected Integer defaultFetchSize;
-  protected ExecutorType defaultExecutorType = ExecutorType.SIMPLE;
+  protected ExecutorType defaultExecutorType = ExecutorType.SIMPLE;   //映射类型
   protected AutoMappingBehavior autoMappingBehavior = AutoMappingBehavior.PARTIAL;
   protected AutoMappingUnknownColumnBehavior autoMappingUnknownColumnBehavior = AutoMappingUnknownColumnBehavior.NONE;
 
   protected Properties variables = new Properties();
-  protected ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
-  protected ObjectFactory objectFactory = new DefaultObjectFactory();
-  protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
+  protected ReflectorFactory reflectorFactory = new DefaultReflectorFactory();  //映射的class 缓存池对象  Map<Class, Reflector>
+  protected ObjectFactory objectFactory = new DefaultObjectFactory();   //创建object工厂, 根据class 创建对应的Object
+  protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory(); //对象包装工厂  BeanWrapper() 封装一个对象
 
-  protected boolean lazyLoadingEnabled = false;
+  protected boolean lazyLoadingEnabled = false;  //默认不启用懒加载
+  //代理工厂 javassist
   protected ProxyFactory proxyFactory = new JavassistProxyFactory(); // #224 Using internal Javassist instead of OGNL
 
-  protected String databaseId;
+  protected String databaseId; //数据库名称
   /**
    * Configuration factory class.
    * Used to create Configuration for loading deserialized unread properties.
    *
    * @see <a href='https://code.google.com/p/mybatis/issues/detail?id=300'>Issue 300 (google code)</a>
    */
-  protected Class<?> configurationFactory;
+  protected Class<?> configurationFactory;  //配置工厂对象
 
   protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
   protected final InterceptorChain interceptorChain = new InterceptorChain();
   protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry();
-  protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
+  protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();  //默认类型别名注册  int string
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
 
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection")

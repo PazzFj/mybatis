@@ -46,23 +46,23 @@ import org.apache.ibatis.reflection.property.PropertyNamer;
  */
 public class Reflector {
 
-  private final Class<?> type;
-  private final String[] readablePropertyNames;
-  private final String[] writablePropertyNames;
-  private final Map<String, Invoker> setMethods = new HashMap<>();
-  private final Map<String, Invoker> getMethods = new HashMap<>();
-  private final Map<String, Class<?>> setTypes = new HashMap<>();
-  private final Map<String, Class<?>> getTypes = new HashMap<>();
-  private Constructor<?> defaultConstructor;
+  private final Class<?> type; //映射对象class
+  private final String[] readablePropertyNames;   //读取属性名称数组  为getMethods 中的keys
+  private final String[] writablePropertyNames;   //写入属性名称数组  为setMethods 中的keys
+  private final Map<String, Invoker> setMethods = new HashMap<>();  //Invoke 为方法 MethodInvoke 封装 Method 对象 type
+  private final Map<String, Invoker> getMethods = new HashMap<>();  //Invoke 为方法 MethodInvoke 封装 Method 对象 type
+  private final Map<String, Class<?>> setTypes = new HashMap<>();   // class 为参数类型
+  private final Map<String, Class<?>> getTypes = new HashMap<>();   // class 为参数类型
+  private Constructor<?> defaultConstructor; //默认构造器
 
   private Map<String, String> caseInsensitivePropertyMap = new HashMap<>();
 
   public Reflector(Class<?> clazz) {
     type = clazz;
-    addDefaultConstructor(clazz);
-    addGetMethods(clazz);
-    addSetMethods(clazz);
-    addFields(clazz);
+    addDefaultConstructor(clazz); //添加默认构造器 Constructor
+    addGetMethods(clazz); //添加class中所有的get method   ==>> getMethods
+    addSetMethods(clazz); //添加class中所有的set method   ==>> setMethods
+    addFields(clazz);     //添加class中所有的 field
     readablePropertyNames = getMethods.keySet().toArray(new String[getMethods.keySet().size()]);
     writablePropertyNames = setMethods.keySet().toArray(new String[setMethods.keySet().size()]);
     for (String propName : readablePropertyNames) {
@@ -73,6 +73,7 @@ public class Reflector {
     }
   }
 
+  //添加默认构造器 Constructor, 没有则不添加
   private void addDefaultConstructor(Class<?> clazz) {
     Constructor<?>[] consts = clazz.getDeclaredConstructors();
     for (Constructor<?> constructor : consts) {
@@ -84,7 +85,7 @@ public class Reflector {
 
   private void addGetMethods(Class<?> cls) {
     Map<String, List<Method>> conflictingGetters = new HashMap<>();
-    Method[] methods = getClassMethods(cls);
+    Method[] methods = getClassMethods(cls); //获取到class所有的method
     for (Method method : methods) {
       if (method.getParameterTypes().length > 0) {
         continue;
@@ -157,6 +158,7 @@ public class Reflector {
     resolveSetterConflicts(conflictingSetters);
   }
 
+  //添加方法冲突
   private void addMethodConflict(Map<String, List<Method>> conflictingMethods, String name, Method method) {
     List<Method> list = conflictingMethods.computeIfAbsent(name, k -> new ArrayList<>());
     list.add(method);
@@ -280,13 +282,7 @@ public class Reflector {
   }
 
   /**
-   * This method returns an array containing all methods
-   * declared in this class and any superclass.
-   * We use this method, instead of the simpler <code>Class.getMethods()</code>,
-   * because we want to look for private methods as well.
-   *
-   * @param cls The class
-   * @return An array containing all methods in this class
+   * 获取class 中所有的方法
    */
   private Method[] getClassMethods(Class<?> cls) {
     Map<String, Method> uniqueMethods = new HashMap<>();

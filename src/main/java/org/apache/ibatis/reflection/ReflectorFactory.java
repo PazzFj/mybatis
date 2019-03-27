@@ -22,4 +22,5 @@ public interface ReflectorFactory {
   void setClassCacheEnabled(boolean classCacheEnabled);
 
   Reflector findForClass(Class<?> type);
+
 }

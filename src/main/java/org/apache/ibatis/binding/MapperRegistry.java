@@ -27,9 +27,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 
 /**
- * @author Clinton Begin
- * @author Eduardo Macarron
- * @author Lasse Voss
+ * 映射注册
  */
 public class MapperRegistry {
 
