@@ -27,18 +27,21 @@ import org.apache.ibatis.reflection.invoker.MethodInvoker;
 import org.apache.ibatis.reflection.property.PropertyTokenizer;
 
 /**
- * @author Clinton Begin
+ * 元类型
+ * 是MyBatis 对类级别的元信息的封装和处理
  */
 public class MetaClass {
 
   private final ReflectorFactory reflectorFactory;
   private final Reflector reflector;
 
+  //私有构造方法
   private MetaClass(Class<?> type, ReflectorFactory reflectorFactory) {
     this.reflectorFactory = reflectorFactory;
     this.reflector = reflectorFactory.findForClass(type);
   }
 
+  //提供一个初始化 MetaClass 对象的静态方法
   public static MetaClass forClass(Class<?> type, ReflectorFactory reflectorFactory) {
     return new MetaClass(type, reflectorFactory);
   }
@@ -167,6 +170,7 @@ public class MetaClass {
     return reflector.getSetInvoker(name);
   }
 
+  // test[0].item[0].name   ==>>  test.item.name
   private StringBuilder buildProperty(String name, StringBuilder builder) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {

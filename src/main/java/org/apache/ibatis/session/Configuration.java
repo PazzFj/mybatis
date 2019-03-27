@@ -104,7 +104,7 @@ public class Configuration {
 
   protected boolean safeRowBoundsEnabled;
   protected boolean safeResultHandlerEnabled = true;
-  protected boolean mapUnderscoreToCamelCase;
+  protected boolean mapUnderscoreToCamelCase;  //是否下划线转换驼峰情况
   protected boolean aggressiveLazyLoading;
   protected boolean multipleResultSetsEnabled = true;
   protected boolean useGeneratedKeys;

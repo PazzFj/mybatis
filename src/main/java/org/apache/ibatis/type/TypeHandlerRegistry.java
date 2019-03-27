@@ -48,8 +48,7 @@ import org.apache.ibatis.io.ResolverUtil;
 import org.apache.ibatis.io.Resources;
 
 /**
- * @author Clinton Begin
- * @author Kazuki Shimizu
+ * 类型处理器注册类
  */
 public final class TypeHandlerRegistry {
 

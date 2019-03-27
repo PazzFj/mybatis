@@ -26,23 +26,21 @@ import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 
 /**
- * @author Iwao AVE!
+ * 类型参数解析器
  */
 public class TypeParameterResolver {
 
   /**
-   * @return The field type as {@link Type}. If it has type parameters in the declaration,<br>
-   *         they will be resolved to the actual runtime {@link Type}s.
+   * 解析Field
    */
   public static Type resolveFieldType(Field field, Type srcType) {
-    Type fieldType = field.getGenericType();
-    Class<?> declaringClass = field.getDeclaringClass();
+    Type fieldType = field.getGenericType();  //返回属性对应的对象
+    Class<?> declaringClass = field.getDeclaringClass(); //返回属性所在的类对象
     return resolveType(fieldType, srcType, declaringClass);
   }
 
   /**
-   * @return The return type of the method as {@link Type}. If it has type parameters in the declaration,<br>
-   *         they will be resolved to the actual runtime {@link Type}s.
+   * 解析Return
    */
   public static Type resolveReturnType(Method method, Type srcType) {
     Type returnType = method.getGenericReturnType();
@@ -51,8 +49,7 @@ public class TypeParameterResolver {
   }
 
   /**
-   * @return The parameter types of the method as an array of {@link Type}s. If they have type parameters in the declaration,<br>
-   *         they will be resolved to the actual runtime {@link Type}s.
+   * 解析Param
    */
   public static Type[] resolveParamTypes(Method method, Type srcType) {
     Type[] paramTypes = method.getGenericParameterTypes();

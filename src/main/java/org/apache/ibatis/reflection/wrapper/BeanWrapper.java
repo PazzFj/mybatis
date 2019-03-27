@@ -27,12 +27,12 @@ import org.apache.ibatis.reflection.invoker.Invoker;
 import org.apache.ibatis.reflection.property.PropertyTokenizer;
 
 /**
- * @author Clinton Begin
+ * 实体包装
  */
 public class BeanWrapper extends BaseWrapper {
 
-  private final Object object;
-  private final MetaClass metaClass;
+  private final Object object;    //包装对象
+  private final MetaClass metaClass;  //Reflector  ReflectorFactory
 
   public BeanWrapper(MetaObject metaObject, Object object) {
     super(metaObject);

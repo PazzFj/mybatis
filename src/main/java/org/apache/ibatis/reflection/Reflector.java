@@ -47,12 +47,12 @@ import org.apache.ibatis.reflection.property.PropertyNamer;
 public class Reflector {
 
   private final Class<?> type; //映射对象class
-  private final String[] readablePropertyNames;   //读取属性名称数组  为getMethods 中的keys
-  private final String[] writablePropertyNames;   //写入属性名称数组  为setMethods 中的keys
-  private final Map<String, Invoker> setMethods = new HashMap<>();  //Invoke 为方法 MethodInvoke 封装 Method 对象 type
-  private final Map<String, Invoker> getMethods = new HashMap<>();  //Invoke 为方法 MethodInvoke 封装 Method 对象 type
-  private final Map<String, Class<?>> setTypes = new HashMap<>();   // class 为参数类型
-  private final Map<String, Class<?>> getTypes = new HashMap<>();   // class 为参数类型
+  private final String[] readablePropertyNames;   //属性名  为getMethods 中的keys
+  private final String[] writablePropertyNames;   //属性名  为setMethods 中的keys
+  private final Map<String, Invoker> setMethods = new HashMap<>();  // key属性名 => (SetFieldInvoker || MethodInvoke)
+  private final Map<String, Invoker> getMethods = new HashMap<>();  // key属性名 => (GetFieldInvoker || MethodInvoke)
+  private final Map<String, Class<?>> setTypes = new HashMap<>();   // key属性名 => value属性类型
+  private final Map<String, Class<?>> getTypes = new HashMap<>();   // key属性名 => value属性类型
   private Constructor<?> defaultConstructor; //默认构造器
 
   private Map<String, String> caseInsensitivePropertyMap = new HashMap<>();
@@ -100,6 +100,7 @@ public class Reflector {
     resolveGetterConflicts(conflictingGetters);
   }
 
+  //分解get冲突
   private void resolveGetterConflicts(Map<String, List<Method>> conflictingGetters) {
     for (Entry<String, List<Method>> entry : conflictingGetters.entrySet()) {
       Method winner = null;
@@ -164,6 +165,7 @@ public class Reflector {
     list.add(method);
   }
 
+  //分解set冲突
   private void resolveSetterConflicts(Map<String, List<Method>> conflictingSetters) {
     for (String propName : conflictingSetters.keySet()) {
       List<Method> setters = conflictingSetters.get(propName);
@@ -265,7 +267,7 @@ public class Reflector {
     if (isValidPropertyName(field.getName())) {
       setMethods.put(field.getName(), new SetFieldInvoker(field));
       Type fieldType = TypeParameterResolver.resolveFieldType(field, type);
-      setTypes.put(field.getName(), typeToClass(fieldType));
+      setTypes.put(field.getName(), typeToClass(fieldType)); //属性名称 => 属性类型
     }
   }
 
@@ -305,6 +307,7 @@ public class Reflector {
     return methods.toArray(new Method[methods.size()]);
   }
 
+  //把方法储存, 使用唯一签名
   private void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
     for (Method currentMethod : methods) {
       if (!currentMethod.isBridge()) {
@@ -319,6 +322,7 @@ public class Reflector {
     }
   }
 
+  //方法唯一签名
   private String getSignature(Method method) {
     StringBuilder sb = new StringBuilder();
     Class<?> returnType = method.getReturnType();
