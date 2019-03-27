@@ -40,16 +40,17 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * @author Clinton Begin
- * @author Kazuki Shimizu
+ * 解析器
  */
 public class XPathParser {
 
-  private final Document document;
-  private boolean validation;
-  private EntityResolver entityResolver;
-  private Properties variables;
-  private XPath xpath;
+  private final Document document; // Document 对象
+  private boolean validation;  //是否开启验证
+
+  //XMLMapperEntityResolver
+  private EntityResolver entityResolver; //用于加载本地 DTD 文件
+  private Properties variables; // mybatis-config.xml 中<propteries> 标签定义的键位对集合
+  private XPath xpath;  //XPath对象
 
   public XPathParser(String xml) {
     commonConstructor(false, null, null);
@@ -226,6 +227,9 @@ public class XPathParser {
     }
   }
 
+  /**
+   * 创建Document 对象
+   */
   private Document createDocument(InputSource inputSource) {
     // important: this must only be called AFTER common constructor
     try {
@@ -261,6 +265,9 @@ public class XPathParser {
     }
   }
 
+  /**
+   * 公共构造器
+   */
   private void commonConstructor(boolean validation, Properties variables, EntityResolver entityResolver) {
     this.validation = validation;
     this.entityResolver = entityResolver;

@@ -94,7 +94,7 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
       final Environment environment = configuration.getEnvironment();
       // 获取事务工厂 spring - mybatis   SpringManagedTransactionFactory 事务工厂
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
-      // 返回 SpringManagedTransaction 对象
+      // 返回 SpringManagedTransaction 对象       ManagedTransaction
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
       final Executor executor = configuration.newExecutor(tx, execType);
       return new DefaultSqlSession(configuration, executor, autoCommit);

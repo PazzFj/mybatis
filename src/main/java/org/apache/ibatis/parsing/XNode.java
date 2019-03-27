@@ -27,16 +27,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * @author Clinton Begin
+ * 节点
  */
 public class XNode {
 
-  private final Node node;
-  private final String name;
-  private final String body;
-  private final Properties attributes;
-  private final Properties variables;
-  private final XPathParser xpathParser;
+  private final Node node;  //org.w3c.dom.Node 对象
+  private final String name;  // 节点名称
+  private final String body;  // 节点内容
+  private final Properties attributes; // 节点属性集合
+  private final Properties variables;  // mybatis-config.xml 配置文件中<properties>节点下定义的键位对
+  private final XPathParser xpathParser;  // 解析器
 
   public XNode(XPathParser xpathParser, Node node, Properties variables) {
     this.xpathParser = xpathParser;
