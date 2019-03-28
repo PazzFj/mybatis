@@ -49,15 +49,14 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
 /**
- * @author Clinton Begin
- * @author Kazuki Shimizu
+ * xml映射对象    com.pazz.dao.TestMapper.xml
  */
 public class XMLMapperBuilder extends BaseBuilder {
 
   private final XPathParser parser;
-  private final MapperBuilderAssistant builderAssistant;
-  private final Map<String, XNode> sqlFragments;
-  private final String resource;
+  private final MapperBuilderAssistant builderAssistant;  //命名空间助手对象
+  private final Map<String, XNode> sqlFragments;   //key=>namespace.sql_id  value=>节点Node
+  private final String resource;   //Mapper.xml文件路径
 
   @Deprecated
   public XMLMapperBuilder(Reader reader, Configuration configuration, String resource, Map<String, XNode> sqlFragments, String namespace) {
@@ -76,11 +75,12 @@ public class XMLMapperBuilder extends BaseBuilder {
     this.builderAssistant.setCurrentNamespace(namespace);
   }
 
-  public XMLMapperBuilder(InputStream inputStream, Configuration configuration, String resource, Map<String, XNode> sqlFragments) {
-    this(new XPathParser(inputStream, true, configuration.getVariables(), new XMLMapperEntityResolver()),
-        configuration, resource, sqlFragments);
+  // TestMapping.xml 文件映射构造器
+  public XMLMapperBuilder(InputStream inputStream, Configuration configuration, String resource, Map<String, XNode> sqlFragments) { //
+    this(new XPathParser(inputStream, true, configuration.getVariables(), new XMLMapperEntityResolver()), configuration, resource, sqlFragments);
   }
 
+  //构造调用构造
   private XMLMapperBuilder(XPathParser parser, Configuration configuration, String resource, Map<String, XNode> sqlFragments) {
     super(configuration);
     this.builderAssistant = new MapperBuilderAssistant(configuration, resource);
@@ -89,13 +89,16 @@ public class XMLMapperBuilder extends BaseBuilder {
     this.resource = resource;
   }
 
+  //解析TestMapper.xml文件中的<mapper>元素
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
+      //配置mapper节点下的属性
       configurationElement(parser.evalNode("/mapper"));
-      configuration.addLoadedResource(resource);
-      bindMapperForNamespace();
+      configuration.addLoadedResource(resource); //储存xml文件路径
+      bindMapperForNamespace(); //绑定命名空间路径对应的 Class 对象
     }
 
+    //解析未解决的语句及结果集对象映射
     parsePendingResultMaps();
     parsePendingCacheRefs();
     parsePendingStatements();
@@ -105,8 +108,10 @@ public class XMLMapperBuilder extends BaseBuilder {
     return sqlFragments.get(refid);
   }
 
+  //处理<mapper namespace="com.pazz.dao.TestDao"> 节点
   private void configurationElement(XNode context) {
     try {
+      //mapper.xml的命名空间路径
       String namespace = context.getStringAttribute("namespace");
       if (namespace == null || namespace.equals("")) {
         throw new BuilderException("Mapper's namespace cannot be empty");
@@ -115,8 +120,11 @@ public class XMLMapperBuilder extends BaseBuilder {
       cacheRefElement(context.evalNode("cache-ref"));
       cacheElement(context.evalNode("cache"));
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
+      //解析结果集映射对象  调用MapperBuilderAssistant 助手创建ResultMap对象
       resultMapElements(context.evalNodes("/mapper/resultMap"));
+      //使用 MapperBuilderAssistant 助手生成 <sql> 节点id
       sqlElement(context.evalNodes("/mapper/sql"));
+      //创建 XMLStatementBuilder
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. The XML location is '" + resource + "'. Cause: " + e, e);
@@ -130,11 +138,12 @@ public class XMLMapperBuilder extends BaseBuilder {
     buildStatementFromContext(list, null);
   }
 
+  //读取<select> <update> <delete> <insert>节点
   private void buildStatementFromContext(List<XNode> list, String requiredDatabaseId) {
     for (XNode context : list) {
       final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId);
       try {
-        statementParser.parseStatementNode();
+        statementParser.parseStatementNode();// 分析语句节点
       } catch (IncompleteElementException e) {
         configuration.addIncompleteStatement(statementParser);
       }
@@ -249,6 +258,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
+  //解析 <resultMap id = "test" type="com.pazz.entity.Test"> 节点
   private ResultMap resultMapElement(XNode resultMapNode) throws Exception {
     return resultMapElement(resultMapNode, Collections.emptyList(), null);
   }
@@ -335,6 +345,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     return builderAssistant.buildDiscriminator(resultType, column, javaTypeClass, jdbcTypeEnum, typeHandlerClass, discriminatorMap);
   }
 
+  // <sql> 节点处理
   private void sqlElement(List<XNode> list) {
     if (configuration.getDatabaseId() != null) {
       sqlElement(list, configuration.getDatabaseId());
@@ -342,17 +353,20 @@ public class XMLMapperBuilder extends BaseBuilder {
     sqlElement(list, null);
   }
 
+  //sql节点处理
   private void sqlElement(List<XNode> list, String requiredDatabaseId) {
     for (XNode context : list) {
       String databaseId = context.getStringAttribute("databaseId");
       String id = context.getStringAttribute("id");
-      id = builderAssistant.applyCurrentNamespace(id, false);
+      // namespace + "." + sqlId
+      id = builderAssistant.applyCurrentNamespace(id, false); //
       if (databaseIdMatchesCurrent(id, databaseId, requiredDatabaseId)) {
         sqlFragments.put(id, context);
       }
     }
   }
 
+  //匹配databaseId是否存在  不存在返回true
   private boolean databaseIdMatchesCurrent(String id, String databaseId, String requiredDatabaseId) {
     if (requiredDatabaseId != null) {
       if (!requiredDatabaseId.equals(databaseId)) {
@@ -433,6 +447,7 @@ public class XMLMapperBuilder extends BaseBuilder {
         //ignore, bound type is not required
       }
       if (boundType != null) {
+        //如果当前映射的TestDao.class 还为注册
         if (!configuration.hasMapper(boundType)) {
           // Spring may not know the real resource name so we set a flag
           // to prevent loading again this resource from the mapper interface

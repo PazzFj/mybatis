@@ -49,15 +49,17 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
 /**
- * @author Clinton Begin
+ * Assistant 助理, 助手
+ *
  */
 public class MapperBuilderAssistant extends BaseBuilder {
 
-  private String currentNamespace;
-  private final String resource;
+  private String currentNamespace;  //当前命名空间
+  private final String resource;    //命名空间路径
   private Cache currentCache;
   private boolean unresolvedCacheRef; // issue #676
 
+  //构造器配置,
   public MapperBuilderAssistant(Configuration configuration, String resource) {
     super(configuration);
     ErrorContext.instance().resource(resource);
@@ -81,6 +83,8 @@ public class MapperBuilderAssistant extends BaseBuilder {
     this.currentNamespace = currentNamespace;
   }
 
+  //应用当前命名空间
+  // <sql id="sss"> </sql>  namespace+"."+"sqlId"
   public String applyCurrentNamespace(String base, boolean isReference) {
     if (base == null) {
       return null;
@@ -172,6 +176,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
         .build();
   }
 
+  //解析器
   public ResultMap addResultMap(
       String id,
       Class<?> type,
@@ -240,6 +245,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return new Discriminator.Builder(configuration, resultMapping, namespaceDiscriminatorMap).build();
   }
 
+  //添加映射语句
   public MappedStatement addMappedStatement(
       String id,
       SqlSource sqlSource,

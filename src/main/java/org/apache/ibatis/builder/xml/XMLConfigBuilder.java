@@ -48,6 +48,10 @@ import org.apache.ibatis.type.JdbcType;
 
 /**
  * 读取配置信息, 储存到 Configuration 对象中
+ * 继承BaseBuilder
+ *     Configuration  配置信息
+ *     TypeAliasRegistry  类型别名注册
+ *     TypeHandlerRegistry   类型处理器注册
  */
 public class XMLConfigBuilder extends BaseBuilder {
 
@@ -117,6 +121,7 @@ public class XMLConfigBuilder extends BaseBuilder {
             environmentsElement(root.evalNode("environments"));
             databaseIdProviderElement(root.evalNode("databaseIdProvider"));
             typeHandlerElement(root.evalNode("typeHandlers"));
+            //解析mappers 节点对应的映射文件
             mapperElement(root.evalNode("mappers"));
         } catch (Exception e) {
             throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -369,9 +374,10 @@ public class XMLConfigBuilder extends BaseBuilder {
                     String mapperClass = child.getStringAttribute("class");
                     if (resource != null && url == null && mapperClass == null) {
                         ErrorContext.instance().resource(resource);
+                        //获取 mapper.xml 文件InputStream
                         InputStream inputStream = Resources.getResourceAsStream(resource);
-                        XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());
-                        mapperParser.parse();
+                        XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments()); //
+                        mapperParser.parse(); //
                     } else if (resource == null && url != null && mapperClass == null) {
                         ErrorContext.instance().resource(url);
                         InputStream inputStream = Resources.getUrlAsStream(url);

@@ -164,26 +164,30 @@ public class Configuration {
      */
     protected Class<?> configurationFactory;  //配置工厂对象
 
-    protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
+    //dao接口层对应的class 注册储存中心
+    protected final MapperRegistry mapperRegistry = new MapperRegistry(this);  //mapper命名空间对应的接口 Class
     protected final InterceptorChain interceptorChain = new InterceptorChain();
     protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry();
     protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();  //默认类型别名注册  int string
     protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
 
-    protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection")
-            .conflictMessageProducer((savedValue, targetValue) ->
-                    ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
+    //冲突消息的生产者  (储存<select> <insert> <update> <delete> 节点封装成 MappedStatement 对象)
+    protected final Map<String, MappedStatement> mappedStatements
+            = new StrictMap<MappedStatement>("Mapped Statements collection").conflictMessageProducer(
+                    (savedValue, targetValue) -> ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
     protected final Map<String, Cache> caches = new StrictMap<>("Caches collection");
     protected final Map<String, ResultMap> resultMaps = new StrictMap<>("Result Maps collection");
     protected final Map<String, ParameterMap> parameterMaps = new StrictMap<>("Parameter Maps collection");
     protected final Map<String, KeyGenerator> keyGenerators = new StrictMap<>("Key Generators collection");
 
-    protected final Set<String> loadedResources = new HashSet<>();
+    //储存mybatis-config.xml 文件中的<mapper resource="xxx/xxx.xml"> 映射文件的路径  如: com/pazz/testMapper.xml
+    //还储存 TestDao.class 的路径 如 namespace:com.pazz.dao.TestDao
+    protected final Set<String> loadedResources = new HashSet<>();  //mapping.xml 映射文件路径集合
     protected final Map<String, XNode> sqlFragments = new StrictMap<>("XML fragments parsed from previous mappers");
 
-    protected final Collection<XMLStatementBuilder> incompleteStatements = new LinkedList<>();
+    protected final Collection<XMLStatementBuilder> incompleteStatements = new LinkedList<>();  //
     protected final Collection<CacheRefResolver> incompleteCacheRefs = new LinkedList<>();
-    protected final Collection<ResultMapResolver> incompleteResultMaps = new LinkedList<>();
+    protected final Collection<ResultMapResolver> incompleteResultMaps = new LinkedList<>();  //ResultMapResolver 结果映射解析器
     protected final Collection<MethodResolver> incompleteMethods = new LinkedList<>();
 
     /*

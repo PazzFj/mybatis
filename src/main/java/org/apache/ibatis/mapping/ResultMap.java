@@ -32,7 +32,7 @@ import org.apache.ibatis.reflection.ParamNameUtil;
 import org.apache.ibatis.session.Configuration;
 
 /**
- * @author Clinton Begin
+ * <resultMap>节点 映射的结果集对象
  */
 public class ResultMap {
   private Configuration configuration;
