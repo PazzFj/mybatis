@@ -44,11 +44,9 @@ import org.xml.sax.SAXParseException;
  */
 public class XPathParser {
 
-  private final Document document; // Document 对象
-  private boolean validation;  //是否开启验证
-
-  //XMLMapperEntityResolver
-  private EntityResolver entityResolver; //用于加载本地 DTD 文件
+  private final Document document; // mybatis-config.xml 读取
+  private boolean validation;      //是否开启验证
+  private EntityResolver entityResolver; // XMLMapperEntityResolver  用于加载本地 DTD 文件
   private Properties variables; // mybatis-config.xml 中<propteries> 标签定义的键位对集合
   private XPath xpath;  //XPath对象
 
@@ -122,7 +120,8 @@ public class XPathParser {
     this.document = createDocument(new InputSource(reader));
   }
 
-  public XPathParser(InputStream inputStream, boolean validation, Properties variables, EntityResolver entityResolver) {
+  // true  null
+  public XPathParser(InputStream inputStream, boolean validation, Properties variables, EntityResolver entityResolver) { //
     commonConstructor(validation, variables, entityResolver);
     this.document = createDocument(new InputSource(inputStream));
   }
@@ -270,7 +269,7 @@ public class XPathParser {
    */
   private void commonConstructor(boolean validation, Properties variables, EntityResolver entityResolver) {
     this.validation = validation;
-    this.entityResolver = entityResolver;
+    this.entityResolver = entityResolver;  // XMLMapperEntityResolver
     this.variables = variables;
     XPathFactory factory = XPathFactory.newInstance();
     this.xpath = factory.newXPath();
