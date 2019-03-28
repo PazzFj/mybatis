@@ -18,7 +18,7 @@ package org.apache.ibatis.plugin;
 import java.util.Properties;
 
 /**
- * @author Clinton Begin
+ * mybatis 拦截器接口
  */
 public interface Interceptor {
 

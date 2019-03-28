@@ -31,7 +31,7 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 public class Plugin implements InvocationHandler {
 
   private final Object target;
-  private final Interceptor interceptor;
+  private final Interceptor interceptor; //所对应的拦截器
   private final Map<Class<?>, Set<Method>> signatureMap;
 
   private Plugin(Object target, Interceptor interceptor, Map<Class<?>, Set<Method>> signatureMap) {
@@ -40,6 +40,7 @@ public class Plugin implements InvocationHandler {
     this.signatureMap = signatureMap;
   }
 
+  //ExamplePlugin
   public static Object wrap(Object target, Interceptor interceptor) {
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
     Class<?> type = target.getClass();

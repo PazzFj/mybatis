@@ -16,7 +16,7 @@
 package org.apache.ibatis.session;
 
 /**
- * @author Clinton Begin
+ * 获取多少行数据的范围 默认 0 ~ 0x7fffffff
  */
 public class RowBounds {
 

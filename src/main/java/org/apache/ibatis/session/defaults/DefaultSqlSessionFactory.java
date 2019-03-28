@@ -93,10 +93,13 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
       // 获取环境
       final Environment environment = configuration.getEnvironment();
       // 获取事务工厂 spring - mybatis   SpringManagedTransactionFactory 事务工厂
+      //JdbcTransactionFactory
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
       // 返回 SpringManagedTransaction 对象       ManagedTransaction
+      //tx = JdbcTransaction
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
-      final Executor executor = configuration.newExecutor(tx, execType);
+      //CachingExecutor
+      final Executor executor = configuration.newExecutor(tx, execType);// 通过拦截器处理 执行器(是否创建代理)
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {
       closeTransaction(tx); // may have fetched a connection so lets call close()

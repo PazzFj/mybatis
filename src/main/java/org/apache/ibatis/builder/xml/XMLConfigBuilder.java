@@ -118,6 +118,7 @@ public class XMLConfigBuilder extends BaseBuilder {
             settingsElement(settings);
             // read it after objectFactory and objectWrapperFactory issue #631
             // 在objectFactory和objectWrapperFactory第631期之后阅读它
+            //解析environments节点, 如若为空配置默认的
             environmentsElement(root.evalNode("environments"));
             databaseIdProviderElement(root.evalNode("databaseIdProvider"));
             typeHandlerElement(root.evalNode("typeHandlers"));
@@ -282,8 +283,11 @@ public class XMLConfigBuilder extends BaseBuilder {
             for (XNode child : context.getChildren()) {
                 String id = child.getStringAttribute("id");
                 if (isSpecifiedEnvironment(id)) {
+                    //JdbcTransactionFactory
                     TransactionFactory txFactory = transactionManagerElement(child.evalNode("transactionManager"));
+                    //PooledDataSourceFactory
                     DataSourceFactory dsFactory = dataSourceElement(child.evalNode("dataSource"));
+                    //PooledDataSource
                     DataSource dataSource = dsFactory.getDataSource();
                     Environment.Builder environmentBuilder = new Environment.Builder(id)
                             .transactionFactory(txFactory)

@@ -23,9 +23,9 @@ import org.apache.ibatis.transaction.TransactionFactory;
  * 全局环境配置 唯一
  */
 public final class Environment {
-  private final String id;
-  private final TransactionFactory transactionFactory;
-  private final DataSource dataSource;
+  private final String id; //属性id
+  private final TransactionFactory transactionFactory;  //JdbcTransactionManager
+  private final DataSource dataSource; //PooledDataSource 对象获取连接
 
   public Environment(String id, TransactionFactory transactionFactory, DataSource dataSource) {
     if (id == null) {

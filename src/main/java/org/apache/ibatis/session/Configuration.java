@@ -100,7 +100,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 public class Configuration {
 
     //环境配置
-    protected Environment environment;
+    protected Environment environment; //
 
     protected boolean safeRowBoundsEnabled; //允许在嵌套语句中使用分页（RowBounds）。如果允许使用则设置为 false
     protected boolean safeResultHandlerEnabled = true; //允许在嵌套语句中使用分页（ResultHandler）。如果允许使用则设置为 false
@@ -166,10 +166,11 @@ public class Configuration {
 
     //dao接口层对应的class 注册储存中心
     protected final MapperRegistry mapperRegistry = new MapperRegistry(this);  //mapper命名空间对应的接口 Class
+    //拦截注册中心
     protected final InterceptorChain interceptorChain = new InterceptorChain();
     protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry();
     protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();  //默认类型别名注册  int string
-    protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
+    protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry(); //SqlSource 创建器
 
     //冲突消息的生产者  (储存<select> <insert> <update> <delete> 节点封装成 MappedStatement 对象)
     protected final Map<String, MappedStatement> mappedStatements

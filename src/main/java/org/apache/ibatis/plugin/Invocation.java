@@ -19,7 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * @author Clinton Begin
+ * 启动点
  */
 public class Invocation {
 
