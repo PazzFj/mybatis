@@ -23,7 +23,7 @@ import java.util.StringJoiner;
 import org.apache.ibatis.reflection.ArrayUtil;
 
 /**
- * @author Clinton Begin
+ * 缓存key
  */
 public class CacheKey implements Cloneable, Serializable {
 
@@ -31,14 +31,15 @@ public class CacheKey implements Cloneable, Serializable {
 
   public static final CacheKey NULL_CACHE_KEY = new NullCacheKey();
 
-  private static final int DEFAULT_MULTIPLYER = 37;
-  private static final int DEFAULT_HASHCODE = 17;
+  private static final int DEFAULT_MULTIPLYER = 37; //默认增数
+  private static final int DEFAULT_HASHCODE = 17;  //默认哈希码
 
-  private final int multiplier;
-  private int hashcode;
-  private long checksum;
-  private int count;
+  private final int multiplier; //增数
+  private int hashcode;       //哈希数
+  private long checksum;    //检查数量
+  private int count;        //计数器  updateList的长度
   // 8/21/2017 - Sonarlint flags this as needing to be marked transient.  While true if content is not serializable, this is not always true and thus should not be marked transient.
+  // 8/21/2017 - 将此标记为需要标记为瞬态。如果内容不可序列化，则为true，但这并不总是正确的，因此不应标记为transient
   private List<Object> updateList;
 
   public CacheKey() {
@@ -57,7 +58,10 @@ public class CacheKey implements Cloneable, Serializable {
     return updateList.size();
   }
 
+  //创建CacheKey 使用update 方法改变hashcode 的值
   public void update(Object object) {
+    //String 的hashCode() 方法
+    //Integer 的hashCode() 方法
     int baseHashCode = object == null ? 1 : ArrayUtil.hashCode(object);
 
     count++;

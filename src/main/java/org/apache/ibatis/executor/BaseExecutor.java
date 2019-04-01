@@ -45,14 +45,14 @@ import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
- * @author Clinton Begin
+ * 执行器的基础实现类
  */
 public abstract class BaseExecutor implements Executor {
 
   private static final Log log = LogFactory.getLog(BaseExecutor.class);
 
   protected Transaction transaction;  //事务对象 JdbcTransaction
-  protected Executor wrapper;
+  protected Executor wrapper;  //当前对象(可以理解为装饰模式或者代理模式)
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
   protected PerpetualCache localCache;
@@ -60,7 +60,7 @@ public abstract class BaseExecutor implements Executor {
   protected Configuration configuration;
 
   protected int queryStack;
-  private boolean closed;
+  private boolean closed;  //默认不关闭
 
   protected BaseExecutor(Configuration configuration, Transaction transaction) {
     this.transaction = transaction;
@@ -131,11 +131,22 @@ public abstract class BaseExecutor implements Executor {
 
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
+    //通过MappedStatement 获取到sql语句
     BoundSql boundSql = ms.getBoundSql(parameter);
-    CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);
+    //创建CacheKey
+    CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);//
     return query(ms, parameter, rowBounds, resultHandler, key, boundSql);
   }
 
+  /**
+   * 核心查询
+   * @param ms
+   * @param parameter 参数对象
+   * @param rowBounds 行范围
+   * @param resultHandler 结果对象
+   * @param key 根据sql语句及使用方法等等创建的一个对象
+   * @param boundSql sql语句对象
+   */
   @SuppressWarnings("unchecked")
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
