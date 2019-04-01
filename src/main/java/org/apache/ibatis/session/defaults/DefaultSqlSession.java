@@ -45,7 +45,7 @@ import org.apache.ibatis.session.SqlSession;
 public class DefaultSqlSession implements SqlSession {
 
     private final Configuration configuration; //配置
-    private final Executor executor; //执行器
+    private final Executor executor; //执行器  CachingExecutor
 
     private final boolean autoCommit;//默认不自动提交
     private boolean dirty; //变脏

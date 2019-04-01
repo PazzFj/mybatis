@@ -611,7 +611,13 @@ public class Configuration {
         return newExecutor(transaction, defaultExecutorType);
     }
 
-    public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
+    /**
+     *
+     * @param transaction
+     * @param executorType
+     * @return
+     */
+    public Executor newExecutor(Transaction transaction, ExecutorType executorType) { //创建新的执行器
         executorType = executorType == null ? defaultExecutorType : executorType;
         executorType = executorType == null ? ExecutorType.SIMPLE : executorType;
         Executor executor;
