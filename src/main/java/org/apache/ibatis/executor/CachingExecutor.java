@@ -150,6 +150,7 @@ public class CachingExecutor implements Executor {
     return delegate.isCached(ms, key);
   }
 
+  //延迟加载
   @Override
   public void deferLoad(MappedStatement ms, MetaObject resultObject, String property, CacheKey key, Class<?> targetType) {
     delegate.deferLoad(ms, resultObject, property, key, targetType);

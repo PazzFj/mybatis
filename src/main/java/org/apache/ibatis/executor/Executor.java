@@ -53,8 +53,10 @@ public interface Executor {
 
   boolean isCached(MappedStatement ms, CacheKey key);
 
+  //清除本地缓存
   void clearLocalCache();
 
+  //延迟加载
   void deferLoad(MappedStatement ms, MetaObject resultObject, String property, CacheKey key, Class<?> targetType);
 
   Transaction getTransaction();

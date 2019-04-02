@@ -23,7 +23,7 @@ import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.apache.ibatis.session.Configuration;
 
 /**
- * @author Andrew Gustafson
+ * 结果提取器
  */
 public class ResultExtractor {
   private final Configuration configuration;

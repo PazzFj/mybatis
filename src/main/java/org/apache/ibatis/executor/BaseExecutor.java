@@ -55,11 +55,11 @@ public abstract class BaseExecutor implements Executor {
   protected Executor wrapper;  //当前执行器对象(可以理解为装饰模式或者代理模式)
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
-  protected PerpetualCache localCache;
+  protected PerpetualCache localCache;    //数据缓存对象 CacheKey => List
   protected PerpetualCache localOutputParameterCache;  //永久缓存对象 (输出参数缓存)  底层就是个 HashMap
   protected Configuration configuration;
 
-  protected int queryStack;
+  protected int queryStack; //查询次数
   private boolean closed;  //默认不关闭
 
   protected BaseExecutor(Configuration configuration, Transaction transaction) {
@@ -135,7 +135,7 @@ public abstract class BaseExecutor implements Executor {
     BoundSql boundSql = ms.getBoundSql(parameter);
     //创建CacheKey
     CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);//
-    return query(ms, parameter, rowBounds, resultHandler, key, boundSql);
+    return query(ms, parameter, rowBounds, resultHandler, key, boundSql);//
   }
 
   /**
@@ -162,7 +162,7 @@ public abstract class BaseExecutor implements Executor {
       queryStack++;
       list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
       if (list != null) {
-        handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
+        handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);//处理本地缓存输出参数
       } else {
         list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);
       }
@@ -189,6 +189,7 @@ public abstract class BaseExecutor implements Executor {
     return doQueryCursor(ms, parameter, rowBounds, boundSql);
   }
 
+  //延迟加载
   @Override
   public void deferLoad(MappedStatement ms, MetaObject resultObject, String property, CacheKey key, Class<?> targetType) {
     if (closed) {
@@ -328,6 +329,9 @@ public abstract class BaseExecutor implements Executor {
     }
   }
 
+  /**
+   * 查询数据库
+   */
   private <E> List<E> queryFromDatabase(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     List<E> list;
     localCache.putObject(key, EXECUTION_PLACEHOLDER);
@@ -337,7 +341,7 @@ public abstract class BaseExecutor implements Executor {
       localCache.removeObject(key);
     }
     localCache.putObject(key, list);
-    if (ms.getStatementType() == StatementType.CALLABLE) {
+    if (ms.getStatementType() == StatementType.CALLABLE) {  //默认 PREPARED
       localOutputParameterCache.putObject(key, parameter);
     }
     return list;
@@ -357,7 +361,7 @@ public abstract class BaseExecutor implements Executor {
     this.wrapper = wrapper;
   }
 
-  private static class DeferredLoad {
+  private static class DeferredLoad {  //推迟加载
 
     private final MetaObject resultObject;
     private final String property;
@@ -365,7 +369,7 @@ public abstract class BaseExecutor implements Executor {
     private final CacheKey key;
     private final PerpetualCache localCache;
     private final ObjectFactory objectFactory;
-    private final ResultExtractor resultExtractor;
+    private final ResultExtractor resultExtractor;  //result提取器
 
     // issue #781
     public DeferredLoad(MetaObject resultObject,

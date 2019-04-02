@@ -145,7 +145,7 @@ public class DefaultSqlSession implements SqlSession {
     public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
         try {
             MappedStatement ms = configuration.getMappedStatement(statement);
-            return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);
+            return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);//ResultHandler null
         } catch (Exception e) {
             throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
         } finally {
@@ -167,7 +167,7 @@ public class DefaultSqlSession implements SqlSession {
     public void select(String statement, Object parameter, RowBounds rowBounds, ResultHandler handler) {
         try {
             MappedStatement ms = configuration.getMappedStatement(statement);
-            executor.query(ms, wrapCollection(parameter), rowBounds, handler);
+            executor.query(ms, wrapCollection(parameter), rowBounds, handler);//ResultHandler is not null
         } catch (Exception e) {
             throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
         } finally {
