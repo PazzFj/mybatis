@@ -52,11 +52,11 @@ public abstract class BaseExecutor implements Executor {
   private static final Log log = LogFactory.getLog(BaseExecutor.class);
 
   protected Transaction transaction;  //事务对象 JdbcTransaction
-  protected Executor wrapper;  //当前对象(可以理解为装饰模式或者代理模式)
+  protected Executor wrapper;  //当前执行器对象(可以理解为装饰模式或者代理模式)
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
   protected PerpetualCache localCache;
-  protected PerpetualCache localOutputParameterCache;
+  protected PerpetualCache localOutputParameterCache;  //永久缓存对象 (输出参数缓存)  底层就是个 HashMap
   protected Configuration configuration;
 
   protected int queryStack;
