@@ -140,7 +140,7 @@ public abstract class BaseExecutor implements Executor {
 
   /**
    * 核心查询
-   * @param ms
+   * @param ms 查询方法名对应的映射语句对象
    * @param parameter 参数对象
    * @param rowBounds 行范围
    * @param resultHandler 结果对象
@@ -160,6 +160,8 @@ public abstract class BaseExecutor implements Executor {
     List<E> list;
     try {
       queryStack++;
+
+      //先从缓存读取, 如若找到就不查询数据库
       list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
       if (list != null) {
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);//处理本地缓存输出参数
@@ -336,6 +338,7 @@ public abstract class BaseExecutor implements Executor {
     List<E> list;
     localCache.putObject(key, EXECUTION_PLACEHOLDER);
     try {
+      //doQuery 抽象方法
       list = doQuery(ms, parameter, rowBounds, resultHandler, boundSql);
     } finally {
       localCache.removeObject(key);

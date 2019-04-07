@@ -140,10 +140,12 @@ public class DefaultSqlSession implements SqlSession {
     /**
      * 查询
      * 使用执行器Executor
+     * statement 执行的dao方法名
      */
     @Override
     public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
         try {
+            //根据id 查询对应的映射语句对象
             MappedStatement ms = configuration.getMappedStatement(statement);
             return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);//ResultHandler null
         } catch (Exception e) {
