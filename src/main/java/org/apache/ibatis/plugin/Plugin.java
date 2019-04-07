@@ -26,12 +26,20 @@ import java.util.Set;
 import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
- * @author Clinton Begin
+ * 插件类  实现 InvocationHandler 接口
  */
 public class Plugin implements InvocationHandler {
 
   private final Object target; //目标对象
   private final Interceptor interceptor; //所对应的拦截器
+  /**
+   * @Intercepts(
+   *         {
+   *                 @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
+   *                 @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
+   *         }
+   * )
+   */
   private final Map<Class<?>, Set<Method>> signatureMap; //记录了 @Signature 注解中的信息
 
   private Plugin(Object target, Interceptor interceptor, Map<Class<?>, Set<Method>> signatureMap) {
@@ -44,7 +52,7 @@ public class Plugin implements InvocationHandler {
   public static Object wrap(Object target, Interceptor interceptor) {
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
     Class<?> type = target.getClass();
-    Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
+    Class<?>[] interfaces = getAllInterfaces(type, signatureMap); //signatureMap.containsKey(c)  || c=>type.getInterfaces()
     if (interfaces.length > 0) {
       return Proxy.newProxyInstance(
           type.getClassLoader(),
@@ -67,6 +75,9 @@ public class Plugin implements InvocationHandler {
     }
   }
 
+  /**
+   * 获取签名
+   */
   private static Map<Class<?>, Set<Method>> getSignatureMap(Interceptor interceptor) {
     Intercepts interceptsAnnotation = interceptor.getClass().getAnnotation(Intercepts.class);
     // issue #251
@@ -87,6 +98,9 @@ public class Plugin implements InvocationHandler {
     return signatureMap;
   }
 
+  /**
+   * 获取类所有的上级实现的接口
+   */
   private static Class<?>[] getAllInterfaces(Class<?> type, Map<Class<?>, Set<Method>> signatureMap) {
     Set<Class<?>> interfaces = new HashSet<>();
     while (type != null) {
