@@ -23,9 +23,9 @@ import java.lang.reflect.Method;
  */
 public class Invocation {
 
-  private final Object target;
-  private final Method method;
-  private final Object[] args;
+  private final Object target; //目标对象
+  private final Method method; //目标方法
+  private final Object[] args; //目标方法参数
 
   public Invocation(Object target, Method method, Object[] args) {
     this.target = target;
