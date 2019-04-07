@@ -29,6 +29,7 @@ public class InterceptorChain {
   /**
    * 遍历拦截器
    * 通过拦截器处理对象返回
+   * target => Executor
    */
   public Object pluginAll(Object target) {
     for (Interceptor interceptor : interceptors) {

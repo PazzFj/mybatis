@@ -167,7 +167,7 @@ public class Configuration {
     //dao接口层对应的class 注册储存中心
     protected final MapperRegistry mapperRegistry = new MapperRegistry(this);  //mapper命名空间对应的接口 Class
     //拦截注册中心
-    protected final InterceptorChain interceptorChain = new InterceptorChain();
+    protected final InterceptorChain interceptorChain = new InterceptorChain(); //拦截链 （所有Interceptor接口的实现类缓存类）
     protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry();
     protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();  //默认类型别名注册  int string
     protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry(); //SqlSource 创建器
