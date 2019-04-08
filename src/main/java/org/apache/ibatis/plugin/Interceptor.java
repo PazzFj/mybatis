@@ -26,6 +26,7 @@ public interface Interceptor {
 
     /**
      * target 为执行器 Executor
+     *
      * 实现方法底层为： Plugin.wrap(target, this);
      */
     Object plugin(Object target);
