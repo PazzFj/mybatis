@@ -188,14 +188,14 @@ public class MapperBuilderAssistant extends BaseBuilder {
                 .build();
     }
 
-    //解析器
+    // 创建 ResultMap 对象
     public ResultMap addResultMap(
             String id,
             Class<?> type,
-            String extend,
-            Discriminator discriminator,
+            String extend,  //null
+            Discriminator discriminator, //null
             List<ResultMapping> resultMappings,
-            Boolean autoMapping) {
+            Boolean autoMapping) {   //null
         id = applyCurrentNamespace(id, false);
         extend = applyCurrentNamespace(extend, true);
 
@@ -371,6 +371,9 @@ public class MapperBuilderAssistant extends BaseBuilder {
         return resultMaps;
     }
 
+    /**
+     * 构建 ResultMapping 对象
+     */
     public ResultMapping buildResultMapping(
             Class<?> resultType,
             String property,

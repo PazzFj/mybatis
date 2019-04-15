@@ -31,16 +31,16 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 public class ResultMapping {
 
   private Configuration configuration;
-  private String property;
-  private String column;
-  private Class<?> javaType;
-  private JdbcType jdbcType;
+  private String property;  // 实体类对应字段
+  private String column;    // 数据库对应字段
+  private Class<?> javaType;  // java类型
+  private JdbcType jdbcType;  // sql类型
   private TypeHandler<?> typeHandler;
   private String nestedResultMapId;
   private String nestedQueryId;
   private Set<String> notNullColumns;
   private String columnPrefix;
-  private List<ResultFlag> flags;
+  private List<ResultFlag> flags;  //不为id节点时 次字段为空集合
   private List<ResultMapping> composites;
   private String resultSet;
   private String foreignColumn;

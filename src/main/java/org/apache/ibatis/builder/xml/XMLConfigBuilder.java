@@ -118,7 +118,7 @@ public class XMLConfigBuilder extends BaseBuilder {
             settingsElement(settings);
             // read it after objectFactory and objectWrapperFactory issue #631
             // 在objectFactory和objectWrapperFactory第631期之后阅读它
-            //解析environments节点, 如若为空配置默认的
+            //解析environments节点
             environmentsElement(root.evalNode("environments"));
             databaseIdProviderElement(root.evalNode("databaseIdProvider"));
             typeHandlerElement(root.evalNode("typeHandlers"));
@@ -317,6 +317,7 @@ public class XMLConfigBuilder extends BaseBuilder {
         }
     }
 
+    // <transactionManager type="JDBC"/> 元素
     private TransactionFactory transactionManagerElement(XNode context) throws Exception {
         if (context != null) {
             String type = context.getStringAttribute("type");

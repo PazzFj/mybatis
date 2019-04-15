@@ -100,7 +100,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 public class Configuration {
 
     //环境配置
-    protected Environment environment; //
+    protected Environment environment; //配置数据库 driver  url  username  password
 
     protected boolean safeRowBoundsEnabled; //允许在嵌套语句中使用分页（RowBounds）。如果允许使用则设置为 false
     protected boolean safeResultHandlerEnabled = true; //允许在嵌套语句中使用分页（ResultHandler）。如果允许使用则设置为 false
@@ -172,13 +172,12 @@ public class Configuration {
     protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();  //默认类型别名注册  int string
     protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry(); //SqlSource 创建器
 
-    //冲突消息的生产者  (储存<select> <insert> <update> <delete> 节点封装成 MappedStatement 对象)
-    protected final Map<String, MappedStatement> mappedStatements
-            = new StrictMap<MappedStatement>("Mapped Statements collection").conflictMessageProducer(
+    // (储存 MappedStatement 对象) <select> <insert> <update> <delete>节点
+    protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection").conflictMessageProducer(
                     (savedValue, targetValue) -> ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
     protected final Map<String, Cache> caches = new StrictMap<>("Caches collection");
-    protected final Map<String, ResultMap> resultMaps = new StrictMap<>("Result Maps collection");
-    protected final Map<String, ParameterMap> parameterMaps = new StrictMap<>("Parameter Maps collection"); //<parameterMap> 标签封装的参数集合对象
+    protected final Map<String, ResultMap> resultMaps = new StrictMap<>("Result Maps collection");  // <resultMap>节点的储存池
+    protected final Map<String, ParameterMap> parameterMaps = new StrictMap<>("Parameter Maps collection"); //<parameterMap>节点的储存池
     protected final Map<String, KeyGenerator> keyGenerators = new StrictMap<>("Key Generators collection");  //
 
     //储存mybatis-config.xml 文件中的<mapper resource="xxx/xxx.xml"> 映射文件的路径  如: com/pazz/testMapper.xml
@@ -188,9 +187,9 @@ public class Configuration {
     protected final Map<String, XNode> sqlFragments = new StrictMap<>("XML fragments parsed from previous mappers");
 
     protected final Collection<XMLStatementBuilder> incompleteStatements = new LinkedList<>();  //
-    protected final Collection<CacheRefResolver> incompleteCacheRefs = new LinkedList<>();
-    protected final Collection<ResultMapResolver> incompleteResultMaps = new LinkedList<>();  //ResultMapResolver 结果映射解析器
-    protected final Collection<MethodResolver> incompleteMethods = new LinkedList<>();
+    protected final Collection<CacheRefResolver> incompleteCacheRefs = new LinkedList<>();      //
+    protected final Collection<ResultMapResolver> incompleteResultMaps = new LinkedList<>();  //解析异常的 ResultMapResolver 结果映射解析器
+    protected final Collection<MethodResolver> incompleteMethods = new LinkedList<>();        //
 
     /*
      * A map holds cache-ref relationship. The key is the namespace that
@@ -207,7 +206,7 @@ public class Configuration {
     }
 
     public Configuration() {
-        typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
+        typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class); // jdbc 事务工厂注册
         typeAliasRegistry.registerAlias("MANAGED", ManagedTransactionFactory.class);
 
         typeAliasRegistry.registerAlias("JNDI", JndiDataSourceFactory.class);

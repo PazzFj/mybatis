@@ -39,12 +39,12 @@ public class ResultMap {
 
   private String id;
   private Class<?> type;
-  private List<ResultMapping> resultMappings;
-  private List<ResultMapping> idResultMappings;
-  private List<ResultMapping> constructorResultMappings;
-  private List<ResultMapping> propertyResultMappings;
-  private Set<String> mappedColumns;
-  private Set<String> mappedProperties;
+  private List<ResultMapping> resultMappings;   // result 节点的集合
+  private List<ResultMapping> idResultMappings;  // id 节点的集合
+  private List<ResultMapping> constructorResultMappings;  //
+  private List<ResultMapping> propertyResultMappings;     //
+  private Set<String> mappedColumns;  //column 属性值
+  private Set<String> mappedProperties; //property 属性值
   private Discriminator discriminator;
   private boolean hasNestedResultMaps;
   private boolean hasNestedQueries;
