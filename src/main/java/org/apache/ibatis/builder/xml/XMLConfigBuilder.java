@@ -56,7 +56,7 @@ import org.apache.ibatis.type.JdbcType;
 public class XMLConfigBuilder extends BaseBuilder {
 
     private boolean parsed;             //标志是否启动
-    private final XPathParser parser;   //解析器
+    private final XPathParser parser;   //解析器  new XPathParser(inputStream, true, props, new XMLMapperEntityResolver())
     private String environment;         //null
     private final ReflectorFactory localReflectorFactory = new DefaultReflectorFactory();
 
@@ -369,6 +369,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     private void mapperElement(XNode parent) throws Exception {
         if (parent != null) {
             for (XNode child : parent.getChildren()) {
+                //<package name="com.pazz.springboot.mybatis.dao" ></package>
                 if ("package".equals(child.getName())) {
                     String mapperPackage = child.getStringAttribute("name");
                     configuration.addMappers(mapperPackage);
@@ -381,7 +382,7 @@ public class XMLConfigBuilder extends BaseBuilder {
                         //获取 mapper.xml 文件InputStream
                         InputStream inputStream = Resources.getResourceAsStream(resource);
                         XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments()); //
-                        mapperParser.parse(); //
+                        mapperParser.parse(); //解析映射文件
                     } else if (resource == null && url != null && mapperClass == null) {
                         ErrorContext.instance().resource(url);
                         InputStream inputStream = Resources.getUrlAsStream(url);

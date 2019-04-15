@@ -59,7 +59,7 @@ public class SqlSessionFactoryBuilder {
     }
 
     //加载 mybatis-config.xml 文件
-    public SqlSessionFactory build(InputStream inputStream) {
+    public SqlSessionFactory build(InputStream inputStream) {  //正常使用
         return build(inputStream, null, null);//*
     }
 

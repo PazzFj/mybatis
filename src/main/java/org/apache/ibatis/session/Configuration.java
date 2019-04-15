@@ -813,6 +813,7 @@ public class Configuration {
         return mappedStatements.containsKey(statementName);
     }
 
+    //添加缓存
     public void addCacheRef(String namespace, String referencedNamespace) {
         cacheRefMap.put(namespace, referencedNamespace);
     }
