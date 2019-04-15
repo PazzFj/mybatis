@@ -33,9 +33,9 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  */
 public abstract class BaseBuilder {
 
-    protected final Configuration configuration;
-    protected final TypeAliasRegistry typeAliasRegistry;
-    protected final TypeHandlerRegistry typeHandlerRegistry;
+    protected final Configuration configuration; // 配置器
+    protected final TypeAliasRegistry typeAliasRegistry; // 类型别名注册器
+    protected final TypeHandlerRegistry typeHandlerRegistry; //类型处理注册器
 
     public BaseBuilder(Configuration configuration) {
         this.configuration = configuration;
@@ -64,6 +64,7 @@ public abstract class BaseBuilder {
         return new HashSet<>(Arrays.asList(value.split(",")));
     }
 
+    //根据类名溶解为 JdbcType 对象
     protected JdbcType resolveJdbcType(String alias) {
         if (alias == null) {
             return null;
@@ -75,6 +76,7 @@ public abstract class BaseBuilder {
         }
     }
 
+    //根据类名溶解为 ResultSetType 对象
     protected ResultSetType resolveResultSetType(String alias) {
         if (alias == null) {
             return null;
@@ -97,6 +99,7 @@ public abstract class BaseBuilder {
         }
     }
 
+    //根据类名溶解为 Object 对象
     protected Object createInstance(String alias) {
         Class<?> clazz = resolveClass(alias);
         if (clazz == null) {
@@ -109,6 +112,7 @@ public abstract class BaseBuilder {
         }
     }
 
+    //根据类名溶解为 Class 对象
     protected <T> Class<? extends T> resolveClass(String alias) {
         if (alias == null) {
             return null;

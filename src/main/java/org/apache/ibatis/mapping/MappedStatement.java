@@ -33,29 +33,29 @@ import org.apache.ibatis.session.Configuration;
  */
 public final class MappedStatement {
 
-    private String resource;
-    private Configuration configuration;
-    private String id;
-    private Integer fetchSize;
-    private Integer timeout;
-    private StatementType statementType;
-    private ResultSetType resultSetType;
-    private SqlSource sqlSource;
-    private Cache cache;
-    private ParameterMap parameterMap;
-    private List<ResultMap> resultMaps;
-    private boolean flushCacheRequired; //缓存需要
-    private boolean useCache;
-    private boolean resultOrdered;
-    private SqlCommandType sqlCommandType;
+    private String resource; //命名空间s
+    private Configuration configuration; //配置对象
+    private String id;  //对应方法名
+    private Integer fetchSize; //取大小
+    private Integer timeout; //超时
+    private StatementType statementType; //语句类型 为默认 StatementType.PREPARED;
+    private ResultSetType resultSetType; //结果类型 为默认 ResultSetType.DEFAULT
+    private SqlSource sqlSource;  // RawSqlSource 或者 DynamicSqlSource 一般为 DynamicSqlSource
+    private Cache cache;    //缓存对象(装饰模式)
+    private ParameterMap parameterMap;  // 参数类型
+    private List<ResultMap> resultMaps; // 返回对象, 会存在多条所以是个集合
+    private boolean flushCacheRequired; // 刷新缓存
+    private boolean useCache;           // 使用缓存
+    private boolean resultOrdered;      // 结果排序
+    private SqlCommandType sqlCommandType;  // sql 节点类型
     private KeyGenerator keyGenerator;
     private String[] keyProperties;
     private String[] keyColumns;
     private boolean hasNestedResultMaps;
-    private String databaseId;
-    private Log statementLog;
-    private LanguageDriver lang;
-    private String[] resultSets;
+    private String databaseId;      //
+    private Log statementLog;       // 日志
+    private LanguageDriver lang;    // 语言驱动器 XMLLanguageDriver
+    private String[] resultSets;    //
 
     MappedStatement() {
         // constructor disabled

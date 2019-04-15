@@ -257,7 +257,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
         return new Discriminator.Builder(configuration, resultMapping, namespaceDiscriminatorMap).build();
     }
 
-    //添加映射语句
+    // 创建 MappedStatement
     public MappedStatement addMappedStatement(
             String id,
             SqlSource sqlSource,
@@ -287,7 +287,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
         id = applyCurrentNamespace(id, false);
         boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
 
-        MappedStatement.Builder statementBuilder = new MappedStatement.Builder(configuration, id, sqlSource, sqlCommandType)
+        MappedStatement.Builder statementBuilder = new MappedStatement.Builder(configuration, id, sqlSource, sqlCommandType) //在助手中构建
                 .resource(resource)
                 .fetchSize(fetchSize)
                 .timeout(timeout)
@@ -305,9 +305,10 @@ public class MapperBuilderAssistant extends BaseBuilder {
                 .useCache(valueOrDefault(useCache, isSelect))
                 .cache(currentCache);
 
+        // 为设置 parameterMap 或者 parameterType 则为null
         ParameterMap statementParameterMap = getStatementParameterMap(parameterMap, parameterType, id);
         if (statementParameterMap != null) {
-            statementBuilder.parameterMap(statementParameterMap);
+            statementBuilder.parameterMap(statementParameterMap); // build
         }
 
         MappedStatement statement = statementBuilder.build();

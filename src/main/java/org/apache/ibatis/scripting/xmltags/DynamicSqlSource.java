@@ -22,11 +22,12 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * 动态的sql来源
+ * @see MixedSqlNode
  */
 public class DynamicSqlSource implements SqlSource {
 
     private final Configuration configuration;
-    private final SqlNode rootSqlNode;
+    private final SqlNode rootSqlNode;  // MixedSqlNode 对象为所有的 SqlNode 混合
 
     public DynamicSqlSource(Configuration configuration, SqlNode rootSqlNode) {
         this.configuration = configuration;
@@ -39,6 +40,7 @@ public class DynamicSqlSource implements SqlSource {
         rootSqlNode.apply(context);
         SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder(configuration);
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
+        // 通过创建 StaticSqlSource 解析sql语句 创建一条完成的sql 参数会在执行的时候才会赋值上去
         SqlSource sqlSource = sqlSourceParser.parse(context.getSql(), parameterType, context.getBindings());
         BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
         context.getBindings().forEach(boundSql::setAdditionalParameter);

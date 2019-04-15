@@ -54,7 +54,7 @@ import org.apache.ibatis.type.TypeHandler;
 public class XMLMapperBuilder extends BaseBuilder {
 
     private final XPathParser parser;  // = new XPathParser(inputStream, true, configuration.getVariables(), new XMLMapperEntityResolver());
-    private final MapperBuilderAssistant builderAssistant;  //命名空间助手对象
+    private final MapperBuilderAssistant builderAssistant;  //命名空间助手对象 可以创建 MappedStatement 对象
     private final Map<String, XNode> sqlFragments;   //key=>namespace.sql_id  value=>节点Node
     private final String resource;   //Mapper.xml文件路径
 
@@ -144,9 +144,9 @@ public class XMLMapperBuilder extends BaseBuilder {
     //读取<select> <update> <delete> <insert>节点
     private void buildStatementFromContext(List<XNode> list, String requiredDatabaseId) {
         for (XNode context : list) {
-            final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId);
+            final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId); //创建
             try {
-                statementParser.parseStatementNode();// 分析语句节点
+                statementParser.parseStatementNode();// 解析语句节点
             } catch (IncompleteElementException e) {
                 configuration.addIncompleteStatement(statementParser);
             }

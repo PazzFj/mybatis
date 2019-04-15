@@ -178,12 +178,13 @@ public class Configuration {
                     (savedValue, targetValue) -> ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
     protected final Map<String, Cache> caches = new StrictMap<>("Caches collection");
     protected final Map<String, ResultMap> resultMaps = new StrictMap<>("Result Maps collection");
-    protected final Map<String, ParameterMap> parameterMaps = new StrictMap<>("Parameter Maps collection");
-    protected final Map<String, KeyGenerator> keyGenerators = new StrictMap<>("Key Generators collection");
+    protected final Map<String, ParameterMap> parameterMaps = new StrictMap<>("Parameter Maps collection"); //<parameterMap> 标签封装的参数集合对象
+    protected final Map<String, KeyGenerator> keyGenerators = new StrictMap<>("Key Generators collection");  //
 
     //储存mybatis-config.xml 文件中的<mapper resource="xxx/xxx.xml"> 映射文件的路径  如: com/pazz/testMapper.xml
     //还储存 TestDao.class 的路径 如 namespace:com.pazz.dao.TestDao
-    protected final Set<String> loadedResources = new HashSet<>();  //mapping.xml 映射文件路径集合
+    //还储存 TestDao.class 的路径 如 com.pazz.dao.TestMapper.xml
+    protected final Set<String> loadedResources = new HashSet<>();  //mapping.xml 映射文件路径集合    储存二种 第一种如:  namespace:com.pazz.dao.TestMapper.xml 第二种如:
     protected final Map<String, XNode> sqlFragments = new StrictMap<>("XML fragments parsed from previous mappers");
 
     protected final Collection<XMLStatementBuilder> incompleteStatements = new LinkedList<>();  //
