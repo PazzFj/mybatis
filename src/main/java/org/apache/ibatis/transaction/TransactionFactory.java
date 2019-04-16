@@ -24,6 +24,7 @@ import org.apache.ibatis.session.TransactionIsolationLevel;
 
 /**
  * 事务工厂
+ * 用于创建事务，可以根据(数据源)或者(数据库连接)
  */
 public interface TransactionFactory {
 
@@ -33,12 +34,12 @@ public interface TransactionFactory {
     void setProperties(Properties props);
 
     /**
-     * 创建事务 根据Connection 对象
+     * 创建事务
      */
     Transaction newTransaction(Connection conn);
 
     /**
-     * 创建事务 根据DataSource 对象
+     * 创建事务
      */
     Transaction newTransaction(DataSource dataSource, TransactionIsolationLevel level, boolean autoCommit);
 

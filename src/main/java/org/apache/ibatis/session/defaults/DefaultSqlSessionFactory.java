@@ -88,26 +88,25 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     }
 
     /**
-     * 打开Session 来自DataSource
+     * 创建 SqlSession 根据数据源 DataSource 对象
      *
-     * @param execType
-     * @param level
-     * @param autoCommit
+     * @param execType ExecutorType.SIMPLE
+     * @param level null
+     * @param autoCommit  false
      * @return
      */
     private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
         Transaction tx = null;
         try {
-            // 获取环境
+            // 获取环境  (事务工厂、数据源)
             final Environment environment = configuration.getEnvironment();
-            // 获取事务工厂 spring - mybatis   SpringManagedTransactionFactory 事务工厂
-            //JdbcTransactionFactory
+            // 获取事务工厂  (JdbcTransactionFactory / 默认ManagedTransactionFactory / SpringManagedTransactionFactory)
             final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
-            // 返回 SpringManagedTransaction 对象       ManagedTransaction
-            //tx = JdbcTransaction
+            // 通过工厂创建事务  (JdbcTransaction / ManagedTransaction / SpringManagedTransaction)
             tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
-            //CachingExecutor
+            // 通过事务和 ExecutorType 创建执行器  (SimpleExecutor / CachingExecutor / BatchExecutor)
             final Executor executor = configuration.newExecutor(tx, execType);// 通过拦截器处理 执行器(是否创建代理)
+            // 通过执行器创建 SqlSession
             return new DefaultSqlSession(configuration, executor, autoCommit);
         } catch (Exception e) {
             closeTransaction(tx); // may have fetched a connection so lets call close()

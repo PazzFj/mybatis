@@ -601,6 +601,7 @@ public class Configuration {
         return resultSetHandler;
     }
 
+    // 创建 StatementHandler
     public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
         statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
@@ -612,10 +613,8 @@ public class Configuration {
     }
 
     /**
-     *
-     * @param transaction
-     * @param executorType
-     * @return
+     * 创建 Executor
+     * Transaction 事务 ==>> JdbcTransaction / ManagedTransaction
      */
     public Executor newExecutor(Transaction transaction, ExecutorType executorType) { //创建新的执行器
         executorType = executorType == null ? defaultExecutorType : executorType;

@@ -45,7 +45,7 @@ import org.apache.ibatis.session.SqlSession;
 public class DefaultSqlSession implements SqlSession {
 
     private final Configuration configuration; //配置
-    private final Executor executor; //执行器  CachingExecutor
+    private final Executor executor; //执行器  CachingExecutor (代理)
 
     private final boolean autoCommit;//默认不自动提交
     private boolean dirty; //变脏
@@ -141,13 +141,14 @@ public class DefaultSqlSession implements SqlSession {
      * 查询
      * 使用执行器Executor
      * statement 执行的dao方法名
+     * @rowBounds RowBounds.DEFAULT
      */
     @Override
     public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
         try {
             //根据id 查询对应的映射语句对象
             MappedStatement ms = configuration.getMappedStatement(statement);
-            return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);//ResultHandler null
+            return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER); // ResultHandler is null
         } catch (Exception e) {
             throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
         } finally {

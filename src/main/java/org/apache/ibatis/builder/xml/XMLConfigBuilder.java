@@ -57,7 +57,7 @@ public class XMLConfigBuilder extends BaseBuilder {
 
     private boolean parsed;             //标志是否启动
     private final XPathParser parser;   //解析器  new XPathParser(inputStream, true, props, new XMLMapperEntityResolver())
-    private String environment;         //null
+    private String environment;         // <environments default="development">
     private final ReflectorFactory localReflectorFactory = new DefaultReflectorFactory();
 
     public XMLConfigBuilder(Reader reader) {
@@ -275,20 +275,23 @@ public class XMLConfigBuilder extends BaseBuilder {
         configuration.setConfigurationFactory(resolveClass(props.getProperty("configurationFactory")));
     }
 
+    //解析<environments> 节点
     private void environmentsElement(XNode context) throws Exception {
         if (context != null) {
             if (environment == null) {
                 environment = context.getStringAttribute("default");
             }
+            //获取子节点 <environment id="development">
             for (XNode child : context.getChildren()) {
                 String id = child.getStringAttribute("id");
                 if (isSpecifiedEnvironment(id)) {
-                    //JdbcTransactionFactory
+                    // TransactionFactory
                     TransactionFactory txFactory = transactionManagerElement(child.evalNode("transactionManager"));
-                    //PooledDataSourceFactory
+                    // DataSourceFactory
                     DataSourceFactory dsFactory = dataSourceElement(child.evalNode("dataSource"));
-                    //PooledDataSource
+                    // DataSource
                     DataSource dataSource = dsFactory.getDataSource();
+                    // Environment
                     Environment.Builder environmentBuilder = new Environment.Builder(id)
                             .transactionFactory(txFactory)
                             .dataSource(dataSource);
@@ -317,7 +320,7 @@ public class XMLConfigBuilder extends BaseBuilder {
         }
     }
 
-    // <transactionManager type="JDBC"/> 元素
+    // 解析 <transactionManager type="JDBC"/>
     private TransactionFactory transactionManagerElement(XNode context) throws Exception {
         if (context != null) {
             String type = context.getStringAttribute("type");

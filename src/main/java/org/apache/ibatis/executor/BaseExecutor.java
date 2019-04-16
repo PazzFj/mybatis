@@ -51,11 +51,11 @@ public abstract class BaseExecutor implements Executor {
 
     private static final Log log = LogFactory.getLog(BaseExecutor.class);
 
-    protected Transaction transaction;  //事务对象 JdbcTransaction
+    protected Transaction transaction;  //事务 JdbcTransaction (JDBC) / ManagedTransaction (默认) / SpringManagedTransaction (springboot mybatis)
     protected Executor wrapper;  //当前执行器对象(可以理解为装饰模式或者代理模式)
 
     protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
-    protected PerpetualCache localCache;    //数据缓存对象 CacheKey => List
+    protected PerpetualCache localCache;    //数据缓存池     CacheKey => List
     protected PerpetualCache localOutputParameterCache;  //永久缓存对象 (输出参数缓存)  底层就是个 HashMap
     protected Configuration configuration;
 
@@ -130,12 +130,12 @@ public abstract class BaseExecutor implements Executor {
     }
 
     @Override
-    public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
+    public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {//
         //通过MappedStatement 获取到sql语句
         BoundSql boundSql = ms.getBoundSql(parameter);
         //创建CacheKey
-        CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);//
-        return query(ms, parameter, rowBounds, resultHandler, key, boundSql);//
+        CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);//创建CacheKey
+        return query(ms, parameter, rowBounds, resultHandler, key, boundSql);// 查询
     }
 
     /**
@@ -143,13 +143,13 @@ public abstract class BaseExecutor implements Executor {
      * @param ms 查询方法名对应的映射语句对象
      * @param parameter 参数对象
      * @param rowBounds 行范围
-     * @param resultHandler 结果对象
+     * @param resultHandler 结果对象  null
      * @param key 根据sql语句及使用方法等等创建的一个对象
      * @param boundSql sql语句对象
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
+    public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {//
         ErrorContext.instance().resource(ms.getResource()).activity("executing a query").object(ms.getId());
         if (closed) {
             throw new ExecutorException("Executor was closed.");
@@ -159,13 +159,14 @@ public abstract class BaseExecutor implements Executor {
         }
         List<E> list;
         try {
-            queryStack++;
+            queryStack++;  //
 
             //先从缓存读取, 如若找到就不查询数据库
             list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
             if (list != null) {
                 handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);//处理本地缓存输出参数
             } else {
+                // 缓存为空查询数据库
                 list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);
             }
         } finally {
@@ -350,6 +351,7 @@ public abstract class BaseExecutor implements Executor {
         return list;
     }
 
+    //
     protected Connection getConnection(Log statementLog) throws SQLException {
         Connection connection = transaction.getConnection();
         if (statementLog.isDebugEnabled()) {
