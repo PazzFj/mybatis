@@ -34,22 +34,27 @@ public interface Cache {
     String getId();
 
     /**
+     * 储存缓存对象
      */
     void putObject(Object key, Object value);
 
     /**
+     * 获取指定的缓存对象
      */
     Object getObject(Object key);
 
     /**
+     * 清除指定的key
      */
     Object removeObject(Object key);
 
     /**
+     * 清除该缓存
      */
     void clear();
 
     /**
+     * 获取缓存池大小
      */
     int getSize();
 
