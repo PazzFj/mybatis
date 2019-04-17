@@ -110,7 +110,7 @@ public class Configuration {
     protected boolean multipleResultSetsEnabled = true; //是否允许单一语句返回多结果集（需要驱动支持）
     protected boolean useGeneratedKeys; //允许 JDBC 支持自动生成主键，需要驱动支持。 如果设置为 true 则这个设置强制使用自动生成主键，尽管一些驱动不能支持但仍可正常工作（比如 Derby）
     protected boolean useColumnLabel = true; //使用列标签代替列名。不同的驱动在这方面会有不同的表现，具体可参考相关驱动文档或通过测试这两种不同的模式来观察所用驱动的结果
-    protected boolean cacheEnabled = true; //全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存
+    protected boolean cacheEnabled = true; //(自动缓存 ==>> 二级缓存) 全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存
     //指定当结果集中值为 null 的时候是否调用映射对象的 setter（map 对象时为 put）方法，这在依赖于 Map.keySet() 或 null 值初始化的时候比较有用。注意基本类型（int、boolean 等）是不能设置成 null 的
     protected boolean callSettersOnNulls;
     protected boolean useActualParamName = true;//允许使用方法签名中的名称作为语句参数名称。 为了使用该特性，你的项目必须采用 Java 8 编译，并且加上 -parameters 选项。（新增于 3.4.1）
@@ -175,7 +175,7 @@ public class Configuration {
     // (储存 MappedStatement 对象) <select> <insert> <update> <delete>节点
     protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection").conflictMessageProducer(
                     (savedValue, targetValue) -> ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
-    protected final Map<String, Cache> caches = new StrictMap<>("Caches collection");
+    protected final Map<String, Cache> caches = new StrictMap<>("Caches collection");       // 二级缓存
     protected final Map<String, ResultMap> resultMaps = new StrictMap<>("Result Maps collection");  // <resultMap>节点的储存池
     protected final Map<String, ParameterMap> parameterMaps = new StrictMap<>("Parameter Maps collection"); //<parameterMap>节点的储存池
     protected final Map<String, KeyGenerator> keyGenerators = new StrictMap<>("Key Generators collection");  //
@@ -601,7 +601,7 @@ public class Configuration {
         return resultSetHandler;
     }
 
-    // 创建 StatementHandler
+    // 创建 StatementHandler 处理器 (代理)
     public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
         statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
@@ -613,8 +613,11 @@ public class Configuration {
     }
 
     /**
-     * 创建 Executor
-     * Transaction 事务 ==>> JdbcTransaction / ManagedTransaction
+     * 根据事务器及执行器类型创建 Executor 执行器
+     * Transaction 事务器:
+     *      1、JdbcTransaction
+     *      2、ManagedTransaction
+     *      3、SpringManagedTransaction  (springboot 事务器)
      */
     public Executor newExecutor(Transaction transaction, ExecutorType executorType) { //创建新的执行器
         executorType = executorType == null ? defaultExecutorType : executorType;
@@ -630,6 +633,7 @@ public class Configuration {
         if (cacheEnabled) {
             executor = new CachingExecutor(executor);
         }
+        // 获取所有拦截器 (创建代理)
         executor = (Executor) interceptorChain.pluginAll(executor);
         return executor;
     }

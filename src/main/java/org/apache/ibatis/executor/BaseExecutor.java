@@ -55,7 +55,7 @@ public abstract class BaseExecutor implements Executor {
     protected Executor wrapper;  //当前执行器对象(可以理解为装饰模式或者代理模式)
 
     protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
-    protected PerpetualCache localCache;    //数据缓存池     CacheKey => List
+    protected PerpetualCache localCache;    //数据缓存池     key(CacheKey) => value(List)
     protected PerpetualCache localOutputParameterCache;  //永久缓存对象 (输出参数缓存)  底层就是个 HashMap
     protected Configuration configuration;
 

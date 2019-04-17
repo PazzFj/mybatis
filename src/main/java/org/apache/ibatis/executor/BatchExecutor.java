@@ -78,13 +78,25 @@ public class BatchExecutor extends BaseExecutor {
         return BATCH_UPDATE_RETURN_VALUE;
     }
 
+    /**
+     * 分批查询逻辑：
+     * @param ms
+     * @param parameterObject
+     * @param rowBounds
+     * @param resultHandler
+     * @param boundSql
+     * @param <E>
+     * @return
+     * @throws SQLException
+     */
     @Override
     public <E> List<E> doQuery(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql)
             throws SQLException {
         Statement stmt = null;
         try {
-            flushStatements();
+            flushStatements(); //
             Configuration configuration = ms.getConfiguration();
+            // 创建 StatementHandler 处理器 (PreparedStatementHandler)
             StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameterObject, rowBounds, resultHandler, boundSql);
             Connection connection = getConnection(ms.getStatementLog());
             stmt = handler.prepare(connection, transaction.getTimeout());
@@ -116,9 +128,11 @@ public class BatchExecutor extends BaseExecutor {
             }
             for (int i = 0, n = statementList.size(); i < n; i++) {
                 Statement stmt = statementList.get(i);
+                // 应用事务超时时间
                 applyTransactionTimeout(stmt);
                 BatchResult batchResult = batchResultList.get(i);
                 try {
+                    // 设置执行数
                     batchResult.setUpdateCounts(stmt.executeBatch());
                     MappedStatement ms = batchResult.getMappedStatement();
                     List<Object> parameterObjects = batchResult.getParameterObjects();

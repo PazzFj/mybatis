@@ -29,7 +29,7 @@ public class BatchResult {
     private final String sql;
     private final List<Object> parameterObjects;
 
-    private int[] updateCounts;
+    private int[] updateCounts;  //修改数
 
     public BatchResult(MappedStatement mappedStatement, String sql) {
         super();

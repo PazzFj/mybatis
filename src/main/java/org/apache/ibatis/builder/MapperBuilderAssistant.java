@@ -471,37 +471,11 @@ public class MapperBuilderAssistant extends BaseBuilder {
     }
 
     /**
-     * Backward compatibility signature.
-     */
-    public ResultMapping buildResultMapping(Class<?> resultType, String property, String column, Class<?> javaType,
-                                            JdbcType jdbcType, String nestedSelect, String nestedResultMap, String notNullColumn, String columnPrefix,
-                                            Class<? extends TypeHandler<?>> typeHandler, List<ResultFlag> flags) {
-        return buildResultMapping(
-                resultType, property, column, javaType, jdbcType, nestedSelect,
-                nestedResultMap, notNullColumn, columnPrefix, typeHandler, flags, null, null, configuration.isLazyLoadingEnabled());
-    }
-
-    /**
      * @deprecated Use {@link Configuration#getLanguageDriver(Class)}
      */
     @Deprecated
     public LanguageDriver getLanguageDriver(Class<? extends LanguageDriver> langClass) {
         return configuration.getLanguageDriver(langClass);
-    }
-
-    /**
-     * Backward compatibility signature.
-     */
-    public MappedStatement addMappedStatement(String id, SqlSource sqlSource, StatementType statementType,
-                                              SqlCommandType sqlCommandType, Integer fetchSize, Integer timeout, String parameterMap, Class<?> parameterType,
-                                              String resultMap, Class<?> resultType, ResultSetType resultSetType, boolean flushCache, boolean useCache,
-                                              boolean resultOrdered, KeyGenerator keyGenerator, String keyProperty, String keyColumn, String databaseId,
-                                              LanguageDriver lang) {
-        return addMappedStatement(
-                id, sqlSource, statementType, sqlCommandType, fetchSize, timeout,
-                parameterMap, parameterType, resultMap, resultType, resultSetType,
-                flushCache, useCache, resultOrdered, keyGenerator, keyProperty,
-                keyColumn, databaseId, lang, null);
     }
 
 }

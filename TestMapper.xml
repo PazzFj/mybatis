@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pazz.springboot.mybatis.dao.TestMapper">
+
+    <!--<cache type="PERPETUAL" eviction="LRU" flushInterval="60000" size="512" blocking="false" readOnly="true">-->
+        <!--<property name="aa" value="bb"></property>-->
+    <!--</cache>-->
+
+    <cache type="PERPETUAL" eviction="LRU" flushInterval="60000" size="512" blocking="false" readOnly="true"></cache>
+
+    <!--<parameterMap id="testP" type="com.pazz.springboot.mybatis.entity.TestEntity">-->
+        <!--<parameter property=""></parameter>-->
+    <!--</parameterMap>-->
+
+    <resultMap id="test" type="com.pazz.springboot.mybatis.entity.TestEntity">
+        <!--
+        <constructor>
+            <idArg ></idArg>
+        </constructor>
+        <discriminator javaType="" typeHandler="" column=""></discriminator>
+        -->
+        <id column="id" property="id" jdbcType="VARCHAR" ></id>
+        <result column="name" property="name" jdbcType="VARCHAR"></result>
+        <result column="code" property="code" jdbcType="VARCHAR"></result>
+        <result column="time" property="time" jdbcType="TIMESTAMP"></result>
+        <!--<result column="time" property="time" jdbcType="TIMESTAMP" typeHandler="string" javaType="string"></result>-->
+    </resultMap>
+
+    <sql id="testSql">
+        select * from test
+    </sql>
+
+    <select id="queryTestList" resultMap="test">
+        <include refid="testSql" />
+        <if test="name != null and '' != name">
+            <bind name="name" value="'%' + name + '%'"/>
+            where name like #{name, jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="selectByIds" resultMap="test">
+        <include refid="testSql" /> where id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>
