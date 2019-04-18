@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Frank D. Martinez [mnesarco]
+ * 语言驱动注册器 (注册器)
  */
 public class LanguageDriverRegistry {
 

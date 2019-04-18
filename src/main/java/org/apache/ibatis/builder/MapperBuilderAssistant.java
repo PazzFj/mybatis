@@ -55,7 +55,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
 
     private String currentNamespace;  //当前命名空间
     private final String resource;    //命名空间路径
-    private Cache currentCache;
+    private Cache currentCache;         // 缓存对象
     private boolean unresolvedCacheRef; // issue #676
 
     //构造器配置,

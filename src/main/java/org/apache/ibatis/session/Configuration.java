@@ -167,10 +167,10 @@ public class Configuration {
     //dao接口层对应的class 注册储存中心
     protected final MapperRegistry mapperRegistry = new MapperRegistry(this);  //mapper命名空间对应的接口 Class
     //拦截注册中心
-    protected final InterceptorChain interceptorChain = new InterceptorChain(); //拦截链 （所有Interceptor接口的实现类缓存类）
+    protected final InterceptorChain interceptorChain = new InterceptorChain(); //拦截管理器 (所有Interceptor接口的实现类缓存类)
     protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry();
     protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();  //默认类型别名注册  int string
-    protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry(); //SqlSource 创建器
+    protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry(); //语言驱动注册器 (通过LanguageDriver 可以创建 SqlSource、 ParameterHandler)
 
     // (储存 MappedStatement 对象) <select> <insert> <update> <delete>节点
     protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection").conflictMessageProducer(

@@ -39,8 +39,8 @@ import org.apache.ibatis.reflection.SystemMetaObject;
  */
 public class CacheBuilder {
     private final String id;
-    private Class<? extends Cache> implementation;
-    private final List<Class<? extends Cache>> decorators;
+    private Class<? extends Cache> implementation;      // PerpetualCache 缓存
+    private final List<Class<? extends Cache>> decorators;   // 装饰过的缓存
     private Integer size;
     private Long clearInterval;
     private boolean readWrite;
