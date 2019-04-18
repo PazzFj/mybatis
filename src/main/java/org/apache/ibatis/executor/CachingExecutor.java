@@ -33,7 +33,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 
 /**
- * 装饰模式, 缓存执行器.
+ * 装饰模式, 二级缓存, 执行器.
  */
 public class CachingExecutor implements Executor {
 

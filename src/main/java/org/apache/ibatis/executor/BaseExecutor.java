@@ -45,7 +45,7 @@ import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
- * 执行器的基础实现类
+ * 一级缓存, 执行器的抽象层
  */
 public abstract class BaseExecutor implements Executor {
 
