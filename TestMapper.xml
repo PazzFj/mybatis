@@ -33,6 +33,18 @@
         select * from test
     </sql>
 
+    <insert id="addTest" keyProperty="idTest, nameTest">
+
+    </insert>
+
+    <update id="updateTest" keyProperty="idTest, nameTest">
+
+    </update>
+
+    <delete id="deleteTest">
+
+    </delete>
+
     <select id="queryTestList" resultMap="test">
         <include refid="testSql" />
         <if test="name != null and '' != name">

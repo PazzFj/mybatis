@@ -105,7 +105,7 @@ public class XMLStatementBuilder extends BaseBuilder {
         String resultMap = context.getStringAttribute("resultMap");
         String resultSetType = context.getStringAttribute("resultSetType");
         ResultSetType resultSetTypeEnum = resolveResultSetType(resultSetType);
-        String keyProperty = context.getStringAttribute("keyProperty");
+        String keyProperty = context.getStringAttribute("keyProperty");  // insert 和 update 节点才有的属性
         String keyColumn = context.getStringAttribute("keyColumn");
         String resultSets = context.getStringAttribute("resultSets");
 

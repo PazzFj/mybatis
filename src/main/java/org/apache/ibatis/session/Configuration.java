@@ -108,7 +108,7 @@ public class Configuration {
     ////当开启时，任何方法的调用都会加载该对象的所有属性。 否则，每个属性会按需加载（参考 lazyLoadTriggerMethods)（在 3.4.1 及之前的版本默认值为 true）
     protected boolean aggressiveLazyLoading;
     protected boolean multipleResultSetsEnabled = true; //是否允许单一语句返回多结果集（需要驱动支持）
-    protected boolean useGeneratedKeys; //允许 JDBC 支持自动生成主键，需要驱动支持。 如果设置为 true 则这个设置强制使用自动生成主键，尽管一些驱动不能支持但仍可正常工作（比如 Derby）
+    protected boolean useGeneratedKeys; //默认不允许使用key生成器 (JDBC 支持自动生成主键，需要驱动支持。 如果设置为 true 则这个设置强制使用自动生成主键，尽管一些驱动不能支持但仍可正常工作（比如 Derby）)
     protected boolean useColumnLabel = true; //使用列标签代替列名。不同的驱动在这方面会有不同的表现，具体可参考相关驱动文档或通过测试这两种不同的模式来观察所用驱动的结果
     protected boolean cacheEnabled = true; //(自动缓存 ==>> 二级缓存) 全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存
     //指定当结果集中值为 null 的时候是否调用映射对象的 setter（map 对象时为 put）方法，这在依赖于 Map.keySet() 或 null 值初始化的时候比较有用。注意基本类型（int、boolean 等）是不能设置成 null 的
@@ -174,7 +174,7 @@ public class Configuration {
 
     // (储存 MappedStatement 对象) <select> <insert> <update> <delete>节点
     protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection").conflictMessageProducer(
-                    (savedValue, targetValue) -> ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
+            (savedValue, targetValue) -> ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
     protected final Map<String, Cache> caches = new StrictMap<>("Caches collection");       // 二级缓存
     protected final Map<String, ResultMap> resultMaps = new StrictMap<>("Result Maps collection");  // <resultMap>节点的储存池
     protected final Map<String, ParameterMap> parameterMaps = new StrictMap<>("Parameter Maps collection"); //<parameterMap>节点的储存池
@@ -499,6 +499,7 @@ public class Configuration {
     /**
      * Set a default {@link TypeHandler} class for {@link Enum}.
      * A default {@link TypeHandler} is {@link org.apache.ibatis.type.EnumTypeHandler}.
+     *
      * @param typeHandler a type handler class for {@link Enum}
      * @since 3.4.5
      */
@@ -615,9 +616,9 @@ public class Configuration {
     /**
      * 根据事务器及执行器类型创建 Executor 执行器
      * Transaction 事务器:
-     *      1、JdbcTransaction
-     *      2、ManagedTransaction
-     *      3、SpringManagedTransaction  (springboot 事务器)
+     * 1、JdbcTransaction
+     * 2、ManagedTransaction
+     * 3、SpringManagedTransaction  (springboot 事务器)
      */
     public Executor newExecutor(Transaction transaction, ExecutorType executorType) { //创建新的执行器
         executorType = executorType == null ? defaultExecutorType : executorType;
@@ -953,6 +954,7 @@ public class Configuration {
          * Assign a function for producing a conflict error message when contains value with the same key.
          * <p>
          * function arguments are 1st is saved value and 2nd is target value.
+         *
          * @param conflictMessageProducer A function for producing a conflict error message
          * @return a conflict error message
          * @since 3.5.0

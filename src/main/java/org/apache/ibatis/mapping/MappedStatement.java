@@ -49,7 +49,7 @@ public final class MappedStatement {
     private boolean resultOrdered;      // 结果排序
     private SqlCommandType sqlCommandType;  // sql 节点类型
     private KeyGenerator keyGenerator;
-    private String[] keyProperties;
+    private String[] keyProperties;     //key属性
     private String[] keyColumns;
     private boolean hasNestedResultMaps;
     private String databaseId;      //
