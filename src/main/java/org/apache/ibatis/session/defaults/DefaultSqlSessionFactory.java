@@ -32,7 +32,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
 /**
- * @author Clinton Begin
+ * 默认SqlSession工厂, 创建{@link SqlSession}
  */
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
 
@@ -90,10 +90,9 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     /**
      * 创建 SqlSession 根据数据源 DataSource 对象
      *
-     * @param execType ExecutorType.SIMPLE
-     * @param level null
-     * @param autoCommit  false
-     * @return
+     * @param execType   ExecutorType.SIMPLE
+     * @param level      null
+     * @param autoCommit false
      */
     private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
         Transaction tx = null;
